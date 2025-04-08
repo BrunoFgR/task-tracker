@@ -25,4 +25,4 @@ go.work.sum
 .env
 
 # File to simulate a table of tasks in database:
-tasks.txt
+tasks.json

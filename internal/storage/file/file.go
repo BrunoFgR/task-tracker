@@ -1,7 +1,6 @@
 package file
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -13,7 +12,7 @@ type File struct {
 	content  []byte
 }
 
-func NewFile(filename string) (*File, error) {
+func New(filename string) (*File, error) {
 	fileExists := fileExists(path + filename)
 	if !fileExists {
 		err := createFile(filename)
@@ -24,10 +23,6 @@ func NewFile(filename string) (*File, error) {
 		path:     path,
 		filename: filename,
 	}, nil
-}
-
-func (f *File) filePath() string {
-	return fmt.Sprintf("%s%s", f.path, f.filename)
 }
 
 func fileExists(filename string) bool {
@@ -41,6 +36,11 @@ func fileExists(filename string) bool {
 
 func createFile(filename string) error {
 	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	content := []byte("[]")
+	_, err = file.Write(content)
 	if err != nil {
 		return err
 	}
