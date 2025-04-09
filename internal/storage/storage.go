@@ -6,5 +6,6 @@ import (
 
 type TaskStorage interface {
 	Create(task models.Task) error
-	UpdateByID(ID int, descriptionToUpdate string) error
+	UpdateByID(id int, descriptionToUpdate string) error
+	DeleteByID(id int) error
 }
