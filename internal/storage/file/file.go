@@ -24,17 +24,14 @@ func New(filename string) (*Storage, error) {
 			return nil, err
 		}
 	}
-
 	tasks, err := readTasksFromFile(file)
 	if err != nil {
 		return nil, err
 	}
-
 	lastId := 0
 	if len(tasks) > 0 {
 		lastId = tasks[len(tasks)-1].ID
 	}
-
 	return &Storage{
 		filename:  filename,
 		content:   tasks,
