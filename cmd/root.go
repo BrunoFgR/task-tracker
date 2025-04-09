@@ -22,13 +22,11 @@ var rootCmd = &cobra.Command{
 	Long: `Task Tracker is a command line tool for managing your tasks.
 You can add, list, and manage the status of your tasks through a simple interface.`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		// Initialize storage once for all commands
 		storagePath, _ := cmd.Flags().GetString("storage")
 		storage, err := file.New(storagePath)
 		if err != nil {
 			return err
 		}
-
 		appCtx = context.New(storage)
 		return nil
 	},
