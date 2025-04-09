@@ -93,6 +93,21 @@ func (s *Storage) DeleteByID(id int) error {
 	return nil
 }
 
+// Update task status by ID
+func (s *Storage) UpdateStatusByID(id int, status models.Status) error {
+	idxTask := s.findTaskIndex(id)
+	if idxTask == -1 {
+		return fmt.Errorf("ID %d not found", id)
+	}
+	s.updateStatus(idxTask, status)
+	err := s.writeFile()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Task status updated successfully (ID: %d)\n", id)
+	return nil
+}
+
 func (s *Storage) addID(task models.Task) models.Task {
 	task.ID = s.increment()
 	return task
@@ -105,6 +120,11 @@ func (s *Storage) findTaskIndex(ID int) int {
 		}
 	}
 	return -1
+}
+
+func (s *Storage) updateStatus(idx int, status models.Status) {
+	s.content[idx].Status = status
+	s.content[idx].UpdatedAt = time.Now()
 }
 
 func (s *Storage) updateDescription(idx int, description string) {
