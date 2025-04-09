@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"slices"
+
 	"github.com/BrunoFgR/task-tracker/internal/models"
 )
 
@@ -62,7 +64,7 @@ func (s *Storage) Create(taskToCreate models.Task) error {
 func (s *Storage) UpdateByID(id int, descriptionToUpdate string) error {
 	idxTask := s.findTaskIndex(id)
 	if idxTask == -1 {
-		return fmt.Errorf("%d not found", id)
+		return fmt.Errorf("ID %d not found", id)
 	}
 	if exist := s.descriptionExists(descriptionToUpdate); exist {
 		return fmt.Errorf("description '%s' already exists", descriptionToUpdate)
@@ -73,6 +75,21 @@ func (s *Storage) UpdateByID(id int, descriptionToUpdate string) error {
 		return err
 	}
 	fmt.Printf("Task updated successfully (ID: %d)\n", id)
+	return nil
+}
+
+// Delete task by ID
+func (s *Storage) DeleteByID(id int) error {
+	idxTask := s.findTaskIndex(id)
+	if idxTask == -1 {
+		return fmt.Errorf("ID %d not found", id)
+	}
+	s.content = slices.Delete(s.content, idxTask, idxTask+1)
+	err := s.writeFile()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Task deleted successfully (ID: %d)\n", id)
 	return nil
 }
 
