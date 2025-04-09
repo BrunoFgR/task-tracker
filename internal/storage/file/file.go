@@ -108,6 +108,22 @@ func (s *Storage) UpdateStatusByID(id int, status models.Status) error {
 	return nil
 }
 
+// List tasks
+func (s *Storage) List() ([]models.Task, error) {
+	return s.content, nil
+}
+
+// List tasks by status
+func (s *Storage) ListByStatus(status models.Status) ([]models.Task, error) {
+	var tasks []models.Task
+	for _, task := range s.content {
+		if task.Status == status {
+			tasks = append(tasks, task)
+		}
+	}
+	return tasks, nil
+}
+
 func (s *Storage) addID(task models.Task) models.Task {
 	task.ID = s.increment()
 	return task

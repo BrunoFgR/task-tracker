@@ -9,4 +9,6 @@ type TaskStorage interface {
 	UpdateByID(id int, descriptionToUpdate string) error
 	DeleteByID(id int) error
 	UpdateStatusByID(id int, status models.Status) error
+	List() ([]models.Task, error)
+	ListByStatus(status models.Status) ([]models.Task, error)
 }
