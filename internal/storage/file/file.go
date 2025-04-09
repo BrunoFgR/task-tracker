@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/BrunoFgR/task-tracker/internal/models"
 )
@@ -16,6 +17,7 @@ type Storage struct {
 	increment func() int
 }
 
+// Create instance of Storage
 func New(filename string) (*Storage, error) {
 	file, err := fileExists(filename)
 	if err != nil {
@@ -39,6 +41,7 @@ func New(filename string) (*Storage, error) {
 	}, nil
 }
 
+// Create task
 func (s *Storage) Create(taskToCreate models.Task) error {
 	for _, task := range s.content {
 		if task.Description == taskToCreate.Description {
@@ -47,7 +50,7 @@ func (s *Storage) Create(taskToCreate models.Task) error {
 	}
 	taskWithId := s.addID(taskToCreate)
 	s.content = append(s.content, taskWithId)
-	err := s.writeFile(s.content)
+	err := s.writeFile()
 	if err != nil {
 		return err
 	}
@@ -55,9 +58,50 @@ func (s *Storage) Create(taskToCreate models.Task) error {
 	return nil
 }
 
+// Update task by ID
+func (s *Storage) UpdateByID(id int, descriptionToUpdate string) error {
+	idxTask := s.findTaskIndex(id)
+	if idxTask == -1 {
+		return fmt.Errorf("%d not found", id)
+	}
+	if exist := s.descriptionExists(descriptionToUpdate); exist {
+		return fmt.Errorf("description '%s' already exists", descriptionToUpdate)
+	}
+	s.updateDescription(idxTask, descriptionToUpdate)
+	err := s.writeFile()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Task updated successfully (ID: %d)\n", id)
+	return nil
+}
+
 func (s *Storage) addID(task models.Task) models.Task {
 	task.ID = s.increment()
 	return task
+}
+
+func (s *Storage) findTaskIndex(ID int) int {
+	for idx, task := range s.content {
+		if task.ID == ID {
+			return idx
+		}
+	}
+	return -1
+}
+
+func (s *Storage) updateDescription(idx int, description string) {
+	s.content[idx].Description = description
+	s.content[idx].UpdatedAt = time.Now()
+}
+
+func (s *Storage) descriptionExists(description string) bool {
+	for _, task := range s.content {
+		if task.Description == description {
+			return true
+		}
+	}
+	return false
 }
 
 func createFile(filename string) error {
@@ -104,8 +148,8 @@ func fileExists(filename string) (*os.File, error) {
 	return file, nil
 }
 
-func (s *Storage) writeFile(content []models.Task) error {
-	jsonData, err := json.Marshal(content)
+func (s *Storage) writeFile() error {
+	jsonData, err := json.Marshal(s.content)
 	if err != nil {
 		return fmt.Errorf("failed to encoded JSON file: %w", err)
 	}
