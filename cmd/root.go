@@ -17,7 +17,6 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "task",
 	Short: "A simple CLI task tracker",
 	Long: `Task Tracker is a command line tool for managing your tasks.
 You can add, list, and manage the status of your tasks through a simple interface.`,
