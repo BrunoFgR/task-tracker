@@ -3,25 +3,27 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/BrunoFgR/task-tracker/internal/models"
 	"github.com/spf13/cobra"
 )
 
-var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List tasks",
-	Args:  cobra.ExactArgs(1),
+var listTodoCmd = &cobra.Command{
+	Use:   "todo",
+	Short: "List tasks that status is todo",
+	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		tasks, err := appCtx.Storage.List()
+		tasks, err := appCtx.Storage.ListByStatus(models.StatusTodo)
 		if err != nil {
 			return err
 		}
 		for _, task := range tasks {
 			fmt.Printf("%d. %s | %s\n", task.ID, task.Description, task.Status)
 		}
+
 		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	listCmd.AddCommand(listTodoCmd)
 }
