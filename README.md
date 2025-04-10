@@ -8,18 +8,21 @@ Sample solution for the [task-tracker](https://roadmap.sh/projects/task-tracker)
 Clone the repository and run the following command:
 
 ```bash
-git clone https://github.com/arikchakma/backend-projects.git
-cd backend-projects/task-tracker
+git clone https://github.com/BrunoFgR/task-tracker
+cd task-tracker
 ```
 
 Run the following command to build and run the project:
 
 ```bash
-chmod +x build.sh # To make the build script executable
+# To make the build script executable
+chmod +x build.sh
 
-./build.sh # To build the project
+# To build the project
+./build.sh
 
-./task-tracker --help # To see the list of available commands
+# To see the list of available commands
+./task-tracker --help
 
 # To add a task
 ./task-tracker add "Buy groceries"
