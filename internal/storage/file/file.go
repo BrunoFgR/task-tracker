@@ -21,7 +21,7 @@ type Storage struct {
 
 // Create instance of Storage
 func New(filename string) (*Storage, error) {
-	tasks, err := getTasks(filename)
+	tasks, err := getTasksFromFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func incrementer(lastId int) func() int {
 	return increment
 }
 
-func getTasks(filename string) ([]models.Task, error) {
+func getTasksFromFile(filename string) ([]models.Task, error) {
 	var tasks []models.Task
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
