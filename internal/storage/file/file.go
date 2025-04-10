@@ -21,14 +21,7 @@ type Storage struct {
 
 // Create instance of Storage
 func New(filename string) (*Storage, error) {
-	file, err := fileExists(filename)
-	if err != nil {
-		err := createFile(filename)
-		if err != nil {
-			return nil, err
-		}
-	}
-	tasks, err := readTasksFromFile(file)
+	tasks, err := getTasks(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -192,13 +185,25 @@ func incrementer(lastId int) func() int {
 	return increment
 }
 
-func fileExists(filename string) (*os.File, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+func getTasks(filename string) ([]models.Task, error) {
+	var tasks []models.Task
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		if err := createFile(filename); err != nil {
+			return nil, err
+		}
+		tasks = []models.Task{}
+	} else {
+		file, err := os.Open(filename)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file: %w", err)
+		}
+		tasks, err = readTasksFromFile(file)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	return file, nil
+	return tasks, nil
 }
 
 func (s *Storage) writeFile() error {

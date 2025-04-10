@@ -26,3 +26,6 @@ go.work.sum
 
 # File to simulate a table of tasks in database:
 tasks.json
+
+# Builder
+task-tracker
